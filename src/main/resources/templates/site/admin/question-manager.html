@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考公知识交流平台-题库管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+    <link rel="bookmark" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+</head>
+<body>
+<div th:fragment="managerNav">
+    <style>
+        /*
+ * Base structure
+ */
+
+        /* Move down content because we have a fixed navbar that is 50px tall */
+        body {
+            padding-top: 50px;
+        }
+
+
+        /*
+         * Global add-ons
+         */
+
+        .sub-header {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /*
+         * Top navigation
+         * Hide default border to remove 1px line.
+         */
+        .navbar-fixed-top {
+            border: 0;
+        }
+
+        /*
+         * Sidebar
+         */
+
+        /* Hide for mobile, show later */
+        .sidebar {
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 51px;
+                bottom: 0;
+                left: 0;
+                z-index: 1000;
+                display: block;
+                padding: 20px;
+                overflow-x: hidden;
+                overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+                background-color: #f5f5f5;
+                border-right: 1px solid #eee;
+            }
+        }
+
+        /* Sidebar navigation */
+        .nav-sidebar {
+            margin-right: -21px; /* 20px padding + 1px border */
+            margin-bottom: 20px;
+            margin-left: -20px;
+        }
+        .nav-sidebar > li > a {
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+        .nav-sidebar > .active > a,
+        .nav-sidebar > .active > a:hover,
+        .nav-sidebar > .active > a:focus {
+            color: #fff;
+            background-color: #428bca;
+        }
+
+
+        /*
+         * Main content
+         */
+
+        .main {
+            padding: 20px;
+        }
+        @media (min-width: 768px) {
+            .main {
+                padding-right: 40px;
+                padding-left: 40px;
+            }
+        }
+        .main .page-header {
+            margin-top: 0;
+        }
+
+
+        /*
+         * Placeholder dashboard ideas
+         */
+
+        .placeholders {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .placeholders h4 {
+            margin-bottom: 0;
+        }
+        .placeholder {
+            margin-bottom: 20px;
+        }
+        .placeholder img {
+            display: inline-block;
+            border-radius: 50%;
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li>
+                        <a class="a-hd"  th:href="@{/admin/userList}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
+                            <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1z"/>
+                        </svg>&nbsp; &nbsp;&nbsp;返回后台管理首页</a>
+                    </li>
+                </ul>
+
+                <ul class="nav nav-sidebar">
+                    <li><a class="a-hd"><span class="glyphicon glyphicon-briefcase"></span>&nbsp; &nbsp;&nbsp;科目分类管理</a></li>
+                    <li><a th:href="@{/admin/subjectList}"><span class="glyphicon glyphicon-play"></span>&nbsp; &nbsp;&nbsp;科目</a></li>
+                    <li><a th:href="@{/admin/categoryList} "><span class="glyphicon glyphicon-play"></span>&nbsp; &nbsp;&nbsp;分类</a></li>
+                </ul>
+                <ul class="nav nav-sidebar">
+                    <li><a class="a-hd"><span class="glyphicon glyphicon-briefcase"></span>&nbsp; &nbsp;&nbsp;题库管理</a></li>
+                    <li><a th:href="@{/admin/singleList}"><span class="glyphicon glyphicon-play"></span>&nbsp; &nbsp;&nbsp;选择题</a></li>
+                    <li><a th:href="@{/admin/tfQuesList}"><span class="glyphicon glyphicon-play"></span>&nbsp; &nbsp;&nbsp;判断题</a></li>
+                    <li><a th:href="@{/admin/subjectiveList}"><span class="glyphicon glyphicon-play"></span>&nbsp; &nbsp;&nbsp;主观题</a></li>
+
+                </ul>
+                <ul class="nav nav-sidebar">
+                    <li><a class="a-hd"><span class="glyphicon glyphicon-briefcase"></span>&nbsp; &nbsp;&nbsp;试卷管理</a></li>
+                    <li><a th:href="@{/admin/objectPaperList}"><span class="glyphicon glyphicon-play"></span>&nbsp; &nbsp;&nbsp;客观题试卷</a></li>
+                    <li><a th:href="@{/admin/subPaperList}"><span class="glyphicon glyphicon-play"></span>&nbsp; &nbsp;&nbsp;主观题试卷</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

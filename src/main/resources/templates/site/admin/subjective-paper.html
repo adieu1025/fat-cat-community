@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考公知识交流平台-主观题试卷</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/table.css}"/>
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+    <link rel="bookmark" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+</head>
+<body>
+<!--替换题库管理的侧边栏-->
+<div th:replace="site/admin/question-manager::managerNav"></div>
+
+<!--展示列表，对试卷进行crud-->
+<div class="table-responsive" style="margin-left: 18%">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th colspan="5" style="text-align:left ;font-size: 20px">
+                <button class="line btn btn-primary btn-sm" onclick="add()">添加试卷</button>&nbsp;&nbsp;&nbsp;
+            </th>
+        </tr>
+        <tr>
+            <th>编号</th>
+            <th>所属分类</th>
+            <th>试卷名称</th>
+            <th>材料</th>
+            <th>题目</th>
+            <th>考试时长</th>
+            <th>总分</th>
+            <th colspan="2">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="map:${subPaperDto}">
+            <td th:text="${map.paper.id}">1</td>
+            <td th:text="${map.categoryName}">广东省考真题</td>
+            <td th:text="${map.paper.name}" class="hide-content">
+                2023年广东公务员录用考试《行测》题（县级卷）
+            </td>
+            <td>
+                <i th:text="${map.articleNum}">5</i>&nbsp;/&nbsp;<i th:text="${map.paper.articleNum}">5</i>&nbsp;(篇)
+            </td>
+            <td>
+                <i th:text="${map.essayNum}">5</i>&nbsp;/&nbsp;<i th:text="${map.paper.essayNum}">5</i>&nbsp;(题)
+            </td>
+            <td><span th:text="${map.paper.duration}">120</span>&nbsp;分钟</td>
+            <td th:text="${map.paper.totalScore}">100</td>
+            <td colspan="2">
+                <a th:href="@{|/admin/subPaperDetail/${map.paper.id}|}" style="text-decoration: none;">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: #0aea99">详情</button>
+                </a>
+                <button class="btn btn-default" style="width: 80px;height: 30px;background: #668cf6" th:if="${map.articleNum<map.paper.articleNum}"
+                th:onclick="|addArticle(${map.paper.id},${map.paper.articleNum})|">添加材料</button>
+
+                <button class="btn btn-default" style="width: 80px;height: 30px;background: #668cf6" th:if="${map.essayNum<map.paper.essayNum}"
+                th:onclick="|addEssay(${map.paper.id},${map.paper.essayNum})|">添加题目</button>
+
+                <a th:onclick="|delOne(${map.paper.id})|" style="text-decoration: none;"
+                   data-toggle="modal" data-target="#trashModal">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: #ee4e4e">删除</button>
+                </a>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--分页-->
+<nav th:replace="site/admin/subject::pagination"></nav>
+
+<!--添加-->
+<div class="modal fade" id="addSubPaper" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="my" style="text-align:center">添加试卷</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/addSubPaper}" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group ">
+                        <label class="col-sm-2 control-label">试卷名称:</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" class="form-control" id="name"
+                                   placeholder="">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">材料数量:</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" max="999" step="1" name="articleNum" id="articleNum" value="5">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">题目数量:</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" max="999" step="1" name="essayNum" id="essayNum" value="5">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">答题时长:</label>
+                        <div class="col-sm-10" >
+                            <input type="number" min="0" max="999" step="1" name="duration" id="duration">&nbsp;&nbsp;分钟
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">总分:</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0.00" max="999.99" step="0.01" name="totalScore" id="totalScore" value="100.00">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所属分类:</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="categoryId" name="categoryId"></select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="addBtn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--添加材料模态框-->
+<div class="modal fade" id="addArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clearDom()">&times;</button>
+                <h4 class="modal-title" id="myAddArticle" style="text-align:center">添加试卷材料</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/addPaperArticle}" method="post">
+                <input name="id" id="paperId" hidden="hidden"/>
+
+                <div class="modal-body" id="addArticleBody">
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearDom()">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="addArticle1">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--添加题目模态框-->
+<div class="modal fade" id="addEssay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clearDom()">&times;</button>
+                <h4 class="modal-title" id="myAddEssay" style="text-align:center">添加试卷题目</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/addPaperEssay}" method="post">
+                <input name="id" id="paperId1" hidden="hidden"/>
+                <div class="modal-body" id="addEssayBody">
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearDom()">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="addEssay1">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/subPaper.js}"></script>
+</body>
+</html>

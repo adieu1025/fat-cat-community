@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.SubjectivePaperMapper">
+
+    <sql id="insertFields">
+        name, essay_num, article_num, category_id, duration, total_score, is_delete
+    </sql>
+
+    <sql id="selectFields">
+        id, name, essay_num, article_num, category_id, duration, total_score, is_delete
+    </sql>
+
+    <select id="selectRows" resultType="int">
+        select count(id) from subjective_paper
+        where is_delete != 1
+    </select>
+
+    <select id="selectPage" resultType="SubjectivePaper">
+        select <include refid="selectFields"></include>
+        from subjective_paper
+        where is_delete != 1
+        order by category_id asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <insert id="insertOne" parameterType="SubjectivePaper" keyProperty="id">
+        insert into subjective_paper (<include refid="insertFields"></include>)
+        values (#{name}, #{essayNum}, #{articleNum}, #{categoryId}, #{duration}, #{totalScore}, #{isDelete})
+    </insert>
+
+    <select id="selectById" resultType="SubjectivePaper">
+        select <include refid="selectFields"></include>
+        from subjective_paper
+        where id = #{id}
+    </select>
+
+    <update id="delById">
+        update subjective_paper set
+        is_delete = 1
+        where id = #{id}
+    </update>
+
+</mapper>

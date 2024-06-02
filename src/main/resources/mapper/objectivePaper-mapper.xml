@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.ObjectivePaperMapper">
+
+    <sql id="insertFields">
+        name, choice_num, tf_num, start_time, end_time, duration, total_score, category_id, is_delete, type
+    </sql>
+
+    <sql id="selectFields">
+        id, name, choice_num, tf_num, start_time, end_time, duration, total_score, category_id, is_delete, type
+    </sql>
+
+    <insert id="insertOne" parameterType="ObjectivePaper" keyProperty="id">
+        insert into objective_paper (<include refid="insertFields"></include>)
+        values (#{name}, #{choiceNum}, #{tfNum}, #{startTime}, #{endTime}, #{duration}, #{totalScore}, #{categoryId}, #{isDelete}, #{type})
+    </insert>
+
+    <select id="selectById" resultType="ObjectivePaper">
+        select <include refid="selectFields"></include>
+        from objective_paper
+        where id = #{id}
+    </select>
+
+    <!--查询未被删除且公有的试卷-->
+    <select id="selectByPage" resultType="ObjectivePaper">
+        select <include refid="selectFields"></include>
+        from objective_paper
+        where is_delete != 1 and type != 0
+        order by category_id asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectRows" resultType="int">
+        select count(id)
+        from objective_paper
+        where is_delete != 1
+    </select>
+
+    <select id="selectNameById" resultType="String">
+        select name from objective_paper
+        where id = #{paperId}
+    </select>
+
+</mapper>

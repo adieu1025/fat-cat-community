@@ -1,0 +1,15 @@
+/*给指定的表格的显示效果，防止表格内容过长而不美观*/
+
+.hide-content {
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;/*规定段落的文本不进行换行*/
+    overflow: hidden;/*超出隐藏*/
+    text-overflow: ellipsis;/*隐藏的字符用省略号表示  IE*/
+    -moz-text-overflow: ellipsis;/*隐藏的字符用省略号表示  火狐*/
+}
+
+table {
+    table-layout:fixed;/*table的内部布局固定大小，才可以通过td的width控制宽度*/
+    word-wrap:break-word; /*允许长单词换到下一行*/
+}

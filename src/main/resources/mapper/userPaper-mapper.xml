@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.UserPaperMapper">
+    <sql id="insertFields">
+        user_id, paper_id, total_score, user_score, total_num, right_num, create_time, finish_time, user_time, is_finish
+    </sql>
+
+    <sql id="selectFields">
+        id, user_id, paper_id, total_score, user_score, total_num, right_num, create_time, finish_time, user_time, is_finish
+    </sql>
+
+    <insert id="insertOne" parameterType="UserPaper" keyProperty="id">
+        insert into user_paper (<include refid="insertFields"></include>)
+        values (#{userId}, #{paperId}, #{totalScore}, #{userScore}, #{totalNum}, #{rightNum}, #{createTime}, #{finishTime}, #{userTime}, #{isFinish})
+    </insert>
+
+    <select id="selectById" resultType="UserPaper">
+        select <include refid="selectFields"></include>
+        from user_paper
+        where id = #{id}
+    </select>
+
+    <select id="selectByUserId" resultType="UserPaper">
+        select <include refid="selectFields"></include>
+        from user_paper
+        where user_id = #{id}
+        order by create_time desc
+    </select>
+
+    <select id="countByUidPid" resultType="int">
+        select count(id) from from user_paper
+        where user_id = #{userId} and paper_id = #{paperId}
+    </select>
+
+    <select id="selectByUidPid" resultType="UserPaper">
+        select <include refid="selectFields"></include>
+        from user_paper
+        where user_id = #{uId} and paper_id = #{pId}
+    </select>
+
+    <update id="updateById">
+        update user_paper set
+        total_score=#{totalScore}, user_score=#{userScore}, total_num=#{totalNum}, right_num=#{rightNum}, create_time=#{createTime}, finish_time=#{finishTime}, user_time=#{userTime}, is_finish=#{isFinish}
+        where id=#{id}
+    </update>
+</mapper>

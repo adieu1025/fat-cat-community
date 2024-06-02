@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.SubjectiveQuestionMapper">
+
+    <sql id="insertFields">
+        stem, image_url, article, answer, score, category_id, subject_id, is_delete
+    </sql>
+
+    <sql id="selectFields">
+        id, stem, image_url, article, answer, score, category_id, subject_id, is_delete
+    </sql>
+
+    <insert id="insertOne" parameterType="SubjectiveQuestion" keyProperty="id">
+        insert into subjective_question (<include refid="insertFields"></include>)
+        values (#{stem}, #{imageUrl}, #{article}, #{answer}, #{score}, #{categoryId}, #{subjectId}, #{isDelete})
+    </insert>
+
+    <select id="selectById" resultType="SubjectiveQuestion">
+        select <include refid="selectFields"></include>
+        from subjective_question
+        where id = #{id}
+    </select>
+
+    <select id="selectRows" resultType="int">
+        select count(id)
+        from subjective_question
+        where is_delete != 1
+    </select>
+
+    <select id="selectPage" resultType="SubjectiveQuestion">
+        select <include refid="selectFields"></include>
+        from subjective_question
+        where is_delete != 1
+        order by subject_id asc, category_id asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectPageByCate" resultType="SubjectiveQuestion">
+        select <include refid="selectFields"></include>
+        from subjective_question
+        where is_delete != 1 and category_id = #{cateId}
+        order by id asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <update id="updateOne">
+        update subjective_question set
+        stem=#{stem}, image_url=#{imageUrl}, article=#{article}, answer=#{answer}, score=#{score}, category_id=#{categoryId}, subject_id=#{subjectId}
+        where id=#{id}
+    </update>
+
+    <update id="delOne">
+        update subjective_question set
+        is_delete = 1
+        where id = #{id}
+    </update>
+
+    <select id="countByCateId" resultType="int">
+        select count(id) from subjective_question
+        where is_delete != 1 and category_id = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考公知识交流平台-用户管理</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+    <link rel="bookmark" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a class="icon-bar" href="#">后台管理</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a>欢迎您,<span th:text="${loginAdmin.username}">admin</span></a>
+                </li>
+                <li><a th:href="@{/index}">返回首页</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="row">
+    <!--左边菜单栏-->
+    <div class="col-sm-2" id="menulist">
+        <a th:href="@{/admin/userList}" class="list-group-item active">
+            <!-- 小图标样式设置 -->
+            用户管理</a>
+        <a th:href="@{/admin/questionManager}" class="list-group-item">
+            题库管理</a>
+    </div>
+
+    <!--右边内容-->
+    <div class="col-sm-10" id="right1">
+        <div class="container-fluid">
+            <div class="col-sm-12" id="right">
+
+                <!--列表展示用户-->
+                <div class="table-responsive">
+                    <table class="table table-striped ">
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>创建时间</th>
+                            <th>角色</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user:${userList}">
+                            <td th:text="${user.id}" id="userId">15</td>
+                            <td th:utext="${user.username}">ZZZ</td>
+                            <td th:utext="${user.email}">fat-cat@canon.com</td>
+                            <td th:text="${#dates.format(user.createTime,'yyyy-MM-dd HH:mm:ss')}">2024-01-01 09:50:10</td>
+                            <td th:text="${user.type==1?'管理员':'普通用户'}">普通用户</td>
+                            <td th:text="${user.status==1?'正常':'禁用'}" th:id="${user.id}">正常</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a th:href="@{|/admin/setPermissions/${user.id}|}" style="text-decoration: none;">
+                                        <button class="btn btn-danger btn-sm">修改权限</button>
+                                    </a>
+                                    <button
+                                            type="button" id="userStatusBtn" class="btn btn-danger btn-sm"
+                                            th:onclick="|setUserStatus(this, ${user.id})|"
+                                            th:text="${user.status==1?'禁用':'启用'}">禁用
+                                    </button>
+                                    <button type="button" id="delUserBtn" class="btn btn-danger btn-sm"
+                                            th:onclick="|delUser(this, ${user.id})|">删除
+                                    </button>
+
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页 -->
+                <nav class="mt-5" th:replace="index::pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item"><a class="page-link" href="#">首页</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="#">上一页</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item"><a class="page-link" href="#">下一页</a></li>
+                        <li class="page-item"><a class="page-link" href="#">末页</a></li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 底部页脚部分 -->
+<div class="footer">
+    <p class="text-center">
+        2024 &copy; 考公知识交流平台.
+    </p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script th:src="@{/js/global.js}"></script>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

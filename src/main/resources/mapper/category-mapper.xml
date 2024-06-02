@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.CategoryMapper">
+
+    <select id="selectById" resultType="Category">
+        select * from category
+        where id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="Category">
+        select * from category
+        order by subject_id asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <insert id="insertCategory" parameterType="Category" keyProperty="id">
+        insert into category (name, subject_id)
+        values (#{name}, #{subjectId})
+    </insert>
+
+    <select id="findBySubjectId" resultType="Category">
+        select * from category where subject_id = #{id}
+    </select>
+
+    <select id="countBySubjectId" resultType="int">
+        select count(id) from category where subject_id = #{id}
+    </select>
+
+    <select id="findByName" resultType="Category">
+        select * from category where name = #{name}
+    </select>
+
+    <select id="selectIdByName" resultType="int">
+        select id from category where name = #{name}
+    </select>
+
+    <select id="findRows" resultType="int">
+        select count(id) from category
+    </select>
+
+    <update id="updateCategory">
+        update category set name = #{name},subject_id = #{subjectId}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from category where id = #{id}
+    </delete>
+
+    <select id="batchCountBySubId" resultType="int">
+        select count(id) from category
+        where subject_id in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="batchDel" parameterType="com.nowcoder.community.entity.Category">
+        delete from category where id in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="findAll" resultType="Category">
+        select * from category
+    </select>
+
+    <select id="batchSelectBySubjectId" resultType="Category">
+        select * from category
+        where subject_id in
+        <foreach collection="subjectIds" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

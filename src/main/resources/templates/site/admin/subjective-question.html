@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考公知识交流平台-主观题管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/table.css}"/>
+</head>
+<body>
+<!--替换题库管理的侧边栏-->
+<div th:replace="site/admin/question-manager::managerNav"></div>
+
+<!--展示列表，对题目进行crud-->
+<div class="table-responsive" style="margin-left: 18%">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th colspan="5" style="text-align:left ;font-size: 20px">
+                <button class="line btn btn-primary btn-sm" onclick="add()">添加新题</button>&nbsp;&nbsp;&nbsp;
+            </th>
+        </tr>
+        <tr>
+            <th>编号</th>
+            <th>所属科目</th>
+            <th>题目类别</th>
+            <th>题干</th>
+            <th>参考答案</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="map: ${subjectiveDto}">
+            <td th:text="${map.subjective.id}">1</td>
+            <td th:text="${map.subjectName}">申论</td>
+            <td th:text="${map.categoryName}">概括归纳</td>
+            <td th:text="${map.subjective.stem}" class="hide-content">
+                根据“给定资料”，指出共享经济存在的问题。
+
+                要求：准确、简明，不超过25字。
+            </td>
+            <td th:text="${map.subjective.answer}" class="hide-content">共享产品存在质量安全隐患，个人信息面临泄露风险。| 共享充电宝在成为许多市民生活“标配”的同时，也引发了不少争议。除了共享充电宝自身存在质量安全外，使用者可能还会面临个人信息泄露的风险。曹先生是一位互联网公司的程序员，他说：“每次看到有人使用共享充电宝，我都为他们捏把汗。其实它本质上就是一台电脑，有电脑的地方就会有黑客。现在大数据、算法不断发展，数据公司和社交软件合作，无孔不入地对个人信息进行收集。”
+
+                〖阅读技巧：段首处的句子要重点阅读。阅读段首处的“除了共享充电宝自身存在质量安全外，使用者可能还会面临个人信息泄露的风险”介绍了共享经济中共享产品存在问题，从中可摘抄出要点：共享产品存在质量安全隐患，个人信息面临泄露风险。〗</td>
+            <td>
+                <a th:href="@{|/admin/subjectiveDetail/${map.subjective.id}|}" style="text-decoration: none;">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: #364ce8">详情</button>
+                </a>
+                <a th:onclick="|edit(${map.subjective.id})|" style="text-decoration: none;">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: #3e8f3e">修改</button>
+                </a>
+                <a th:onclick="|delOne(${map.subjective.id})|" style="text-decoration: none;"
+                   data-toggle="modal" data-target="#trashModal">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: red">删除</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--分页-->
+<nav th:replace="site/admin/subject::pagination"></nav>
+
+<!--添加题目对话框-->
+<div class="modal fade" id="addSubjective" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="my" style="text-align:center">添加题目</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/addSubjective}" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">题干:</span>
+                        <textarea class="form-control" rows="3" name="stem" id="stem"></textarea>
+                    </div>
+
+                    <!-- 若题干有图片，上传并显示 -->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"><input type="checkbox" name="items"
+                                                                     id="hasImg"/>图片:</label>
+                        <img style="width: 60px; height: 40px" src="" alt="" id="img"/>
+                        <input type="file" name="file" id="uploadImage">
+                    </div>
+                    <!-- 隐藏域，保存图片的url-->
+                    <input type="text" name="imageUrl" id="imageUrl" value="1" hidden="hidden"/>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">材料:</span>
+                        <textarea class="form-control" rows="3" name="article" id="article"></textarea>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">答案:</span>
+                        <textarea class="form-control" rows="3" name="answer" id="answer"></textarea>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">分值:</span>
+                        <input type="number" min="0.00" max="999.99" step="0.01" name="score" id="score" value="1.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所属分类:</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="categoryId" name="categoryId">
+
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="addBtn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal编辑模态框 -->
+<div class="modal fade" id="editSubjective" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myEdit">编辑</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/updateSubjective}" method="post" id="editForm">
+                <div class="modal-body">
+                    <input name="id" id="subjectiveId1" hidden="hidden"/>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">题干:</span>
+                        <textarea class="form-control" rows="3" name="stem" id="stem1"></textarea>
+                    </div>
+
+                    <!-- 若题干有图片，上传并显示 -->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"><input type="checkbox" name="items" id="hasImg1"/>图片:</label>
+                        <img style="width: 60px; height: 40px" src="" alt="" id="img1"/>
+                        <input type="file" name="file" id="uploadImage1">
+                    </div>
+                    <!-- 隐藏域，保存图片的url-->
+                    <input type="text" name="imageUrl" id="imageUrl1" value="1" hidden="hidden"/>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">材料:</span>
+                        <textarea class="form-control" rows="3" name="article" id="article1"></textarea>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">参考答案:</span>
+                        <textarea class="form-control" rows="3" name="answer" id="answer1"></textarea>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">分值:</span>
+                        <input type="number" min="0.00" max="999.99" step="0.01" name="score" id="score1" value="1.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所属分类:</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="categoryId1" name="categoryId">
+
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="updateBtn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/subjective.js}"></script>
+</body>
+</html>

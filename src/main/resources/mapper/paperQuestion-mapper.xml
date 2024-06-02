@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.PaperQuestionMapper">
+
+    <insert id="batchInsert">
+        insert into paper_question (paper_id, question_id)
+        values 
+        <foreach collection="list" item="item" separator=",">
+            (#{item.paperId}, #{item.questionId})
+        </foreach>
+    </insert>
+
+    <select id="selectByPaperId" resultType="PaperQuestion">
+        select * from paper_question
+        where paper_id = #{paperId}
+    </select>
+
+    <select id="selectQuesIdByPaperId" resultType="Integer">
+        select question_id from paper_question
+        where paper_id = #{paperId}
+    </select>
+
+    <select id="countByQuesId" resultType="int">
+        select count(id) from paper_question
+        where question_id = #{id}
+    </select>
+
+    <select id="batchCountByQuesId" resultType="int">
+        select count(id) from paper_question
+        where question_id in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

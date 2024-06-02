@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>考公知识交流平台-后台管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+    <link rel="bookmark" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a class="icon-bar" href="#">后台管理</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a>欢迎您,<span th:text="${loginAdmin.username}">admin</span></a>
+                </li>
+                <li><a th:href="@{/index}">返回首页</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <!--左边菜单栏-->
+        <div class="col-sm-2" id="menulist">
+            <a th:href="@{/admin/userList}" class="list-group-item active">
+                <!-- 小图标样式设置 -->
+                用户管理</a>
+            <a th:href="@{/admin/questionManager}" class="list-group-item">
+                题库管理</a>
+        </div>
+
+        <!--右边内容-->
+        <div class="col-sm-10" id="right">
+
+        </div>
+    </div>
+</div>
+
+
+<!-- 底部页脚部分 -->
+<div class="footer">
+    <p class="text-center">
+        2024 &copy; 考公知识交流平台.
+    </p>
+</div>
+
+</body>
+<script>
+    /*
+           * 对选中的标签激活active状态，对先前处于active状态但之后未被选中的标签取消active
+           * （实现左侧菜单中的标签点击后变色的效果），页面加载完执行此函数
+           */
+    $(document).ready(function () {
+        $('#menulist> a').click(function (e) {
+            //e.preventDefault();    加上这句则导航的<a>标签会失效
+            $('#menulist> a').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+
+
+    // function loadPage(url) {
+    //     $.get(url,function(data,status){
+    //         $("#right").html(data);
+    //     });
+    // }
+</script>
+</html>

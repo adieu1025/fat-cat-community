@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.ChoiceQuestionMapper">
+
+    <sql id="insertFields">
+        stem, image_url, option_a, option_b, option_c, option_d, answer, analysis, score, category_id, is_multiple, is_delete
+    </sql>
+
+    <sql id="selectFields">
+        id, stem, image_url, option_a, option_b, option_c, option_d, answer, analysis, score, category_id, is_multiple, is_delete
+    </sql>
+
+    <select id="selectById" resultType="ChoiceQuestion">
+        select <include refid="selectFields"></include>
+        from choice_question
+        where id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="ChoiceQuestion">
+        select <include refid="selectFields"></include>
+        from choice_question
+        where is_delete != 1
+        order by category_id asc, is_multiple asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <insert id="insertOne" parameterType="ChoiceQuestion" keyProperty="id">
+        insert into choice_question (<include refid="insertFields"></include>)
+        values (#{stem}, #{imageUrl}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer}, #{analysis}, #{score}, #{categoryId}, #{isMultiple}, #{isDelete})
+    </insert>
+
+    <select id="selectSingleRows" resultType="int">
+        select count(id)
+        from choice_question
+        where is_delete != 1 and is_multiple != 1
+    </select>
+
+    <select id="selectByCategoryId" resultType="ChoiceQuestion">
+        select <include refid="selectFields"></include>
+        from choice_question
+        where category_id = #{id} and is_delete != 1
+    </select>
+
+    <select id="countByCategoryId" resultType="int">
+        select count(id)
+        from choice_question
+        where category_id = #{categoryId} and is_delete != 1
+    </select>
+
+    <select id="batchCountByCateId" resultType="int">
+        select count(id) from choice_question
+        where category_id in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="updateSingle">
+        update choice_question set
+        stem=#{stem}, image_url=#{imageUrl}, option_a=#{optionA}, option_b=#{optionB}, option_c=#{optionC}, option_d=#{optionD}, answer=#{answer}, analysis=#{analysis}, score=#{score}, category_id=#{categoryId}
+        where id=#{id}
+    </update>
+
+    <select id="findIds" resultType="int">
+        select id
+        from choice_question
+        where is_delete != 1
+    </select>
+
+    <select id="findIdsByCateId" resultType="Integer">
+        select id
+        from choice_question
+        where category_id = #{categoryId} and is_delete != 1
+    </select>
+
+    <select id="batchSelectByIds" resultType="ChoiceQuestion">
+        select <include refid="selectFields"></include>
+        from choice_question
+        where id in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="delById">
+        update choice_question set
+        is_delete = 1
+        where id = #{id}
+    </update>
+
+    <update id="batchDel">
+        update choice_question set
+        is_delete = 1 where id in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectBatchKeysByIds" resultType="String">
+        select answer from choice_question
+        where id in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+
+
+</mapper>

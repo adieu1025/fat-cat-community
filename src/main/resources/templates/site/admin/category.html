@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考公知识交流平台-分类管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+    <link rel="bookmark" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+</head>
+<body>
+<!--替换题库管理的侧边栏-->
+<div th:replace="site/admin/question-manager::managerNav"></div>
+
+<!--展示列表，对分类进行增删查改-->
+<div class="table-responsive" style="margin-left: 18%">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th colspan="7">
+                <button class="line btn btn-primary btn-sm" type="button" onclick="add()">添加分类</button>
+                &nbsp;&nbsp;&nbsp;
+                <button class="line btn btn-primary btn-sm" id="getAllCategoryId">批量删除</button>
+            </th>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="allAndNotAll"/>全选/反选</td>
+            <th>编号</th>
+            <th>分类名称</th>
+            <th>所属科目</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="map: ${categoryDto}">
+            <td><input type="checkbox" name="items" th:id="${map.category.id}"/></td>
+            <td th:text="${map.category.id}"></td>
+            <td th:text="${map.category.name}"></td>
+            <td th:text="${map.subjectName}"></td>
+
+            <td>
+                <a th:onclick="|edit(${map.category.id})|" style="text-decoration: none;">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: #3e8f3e">修改</button>
+                </a>
+                <a th:onclick="|delCategory(${map.category.id})|" style="text-decoration: none;">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: red">删除</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--分页-->
+<nav th:replace="site/admin/subject::pagination"></nav>
+
+<!--添加对话框-->
+<div class="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="my" style="text-align:center">添加分类</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/addCategory}" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group ">
+                        <label class="col-sm-2 control-label">分类名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" class="form-control" id="name"
+                                   placeholder="">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <label class="col-sm-2 control-label">所属科目</label>
+                        <div class="col-sm-5">
+                            <select name="subjectId">
+                                <option name="subjectId" th:each="subject:${subjects}"
+                                        th:value="${subject.id}" th:text="${subject.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary" id="addBtn">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--编辑对话框-->
+<div class="modal fade" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="Label">编辑</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/updateCategory}" method="post">
+                <div class="modal-body">
+                    <input name="id" id="CategoryId1" hidden="hidden"/>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">分类名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" class="form-control" id="name1"/>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所属科目</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="subjectId1" name="subjectId"></select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="tch_save_btn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/category.js}"></script>
+</body>
+</html>

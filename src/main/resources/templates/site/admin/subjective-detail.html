@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考公知识交流平台-题目详情</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+    <link rel="bookmark" th:href="@{/img/favicon.ico}" type="image/x-icon"/>
+</head>
+<body>
+
+<!--标题-->
+<div class="header-panel">
+    <h3 class="title" style="text-align: center">题目详情</h3>
+    <a th:href="@{/admin/subjectiveList}" style="text-decoration: none; margin-left: 20%;">
+        <button class="line btn btn-primary btn-sm">返回</button>
+    </a>
+
+</div>
+<br>
+
+<!--内容-->
+<div class="media-body">
+
+    <!--材料-->
+    <div class="card" style="width: 800px; margin-left: 20%; margin-right: 20%">
+        <div class="card-body">
+            <h5 class="card-title"><strong>材料：</strong></h5>
+            <p class="card-text" th:utext="${subjective.article}">
+                美国《科学》杂志的一项研究表明：咖啡因是让蜜蜂忠诚专一的物质。正如咖啡因会刺激人类的大脑一样，这种化学物质也可以刺激蜜蜂的大脑，特别是其中一个叫蘑菇体的脑区域，这一区域跟气味的学习和记忆有关。咖啡因的摄入使得蜜蜂深刻地记住了在柑橘和咖啡花朵上采集花蜜这件事情，所以在接下来很长的一段时间里，蜜蜂都离不开这种特殊味道的花蜜了。
+                最适合这段文字标题的是：
+            </p>
+            <p class="card-text" th:if="${subjective.article==null || subjective.article==''}">
+                本题目没有材料哦
+            </p>
+        </div>
+        <!--图片-->
+        <img th:src="${subjective.imageUrl}" class="card-img-top" alt="">
+    </div>
+    <br>
+
+    <!--题干-->
+    <div class="card" style="width: 800px; margin-left: 20%; margin-right: 20%">
+        <div class="card-body">
+            <h5 class="card-title"><strong>题干：</strong></h5>
+            <p class="card-text" th:utext="${subjective.stem}">
+                美国《科学》杂志的一项研究表明：咖啡因是让蜜蜂忠诚专一的物质。正如咖啡因会刺激人类的大脑一样，这种化学物质也可以刺激蜜蜂的大脑，特别是其中一个叫蘑菇体的脑区域，这一区域跟气味的学习和记忆有关。咖啡因的摄入使得蜜蜂深刻地记住了在柑橘和咖啡花朵上采集花蜜这件事情，所以在接下来很长的一段时间里，蜜蜂都离不开这种特殊味道的花蜜了。
+                最适合这段文字标题的是：</p>
+        </div>
+    </div>
+    <br/>
+    <!--答案-->
+    <div class="card" style="width: 16rem; margin-left: 20%">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">所属分类:&nbsp;<span th:utext="${categoryName}">言语理解</span></li>
+            <li class="list-group-item">分值:&nbsp;<span th:utext="${subjective.score}">1.00</span></li>
+        </ul>
+    </div>
+    <br/>
+    <!--解析-->
+    <div class="card" style="width: 800px; margin-left: 20%; margin-right: 20%">
+        <div class="card-body">
+            <h5 class="card-title"><strong>参考答案：</strong></h5>
+            <p class="card-text" th:utext="${subjective.answer}">
+                文段通过《科学》杂志的研究引出咖啡因让蜜蜂忠诚专一这一观点，接着通过“正如”用人类大脑作类比，来解释为何咖啡因能让蜜蜂记住在柑橘和咖啡花朵上采蜜的事，最后通过“所以”引导结论，即蜜蜂离不开这种特殊味道的花蜜了，故文段先提出观点，再进行原因解释，最后给出结论首尾呼应，强调的是蜜蜂“钟爱”特殊味道花蜜的原因，对应C项。
+                A、B两项，均未提到文段的核心话题“蜜蜂”，排除； D项，“学习和记忆”对应原因解释部分，并非文段重点，且无法体现出“专一性”，排除。
+                故正确答案为C。
+                【文段出处】《蜜蜂为何单恋一枝花》</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

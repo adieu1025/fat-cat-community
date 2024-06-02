@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.TfQuestionMapper">
+
+    <sql id="insertFields">
+        stem, image_url, answer, analysis, score, category_id, is_delete
+    </sql>
+
+    <sql id="selectFields">
+        id, stem, image_url, answer, analysis, score, category_id, is_delete
+    </sql>
+
+    <select id="selectRows" resultType="int">
+        select count(id) from tf_question
+        where is_delete != 1
+    </select>
+
+    <select id="selectById" resultType="TfQuestion">
+        select <include refid="selectFields"></include>
+        from tf_question
+        where id = #{id}
+    </select>
+
+    <select id="selectPage" resultType="TfQuestion">
+        select <include refid="selectFields"></include>
+        from tf_question
+        where is_delete != 1
+        order by category_id asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <insert id="insertOne" parameterType="TfQuestion" keyProperty="id">
+        insert into tf_question (<include refid="insertFields"></include>)
+        values (#{stem}, #{imageUrl}, #{answer}, #{analysis}, #{score}, #{categoryId}, #{isDelete})
+    </insert>
+
+    <update id="updateOne">
+        update tf_question set
+        stem=#{stem}, image_url=#{imageUrl}, answer=#{answer}, analysis=#{analysis}, score=#{score}, category_id=#{categoryId}
+        where id=#{id}
+    </update>
+
+    <update id="delById">
+        update tf_question set
+        is_delete = 1
+        where id = #{id}
+    </update>
+
+</mapper>

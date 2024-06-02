@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>考公知识交流平台-选择题管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/table.css}"/>
+</head>
+<body>
+<!--替换题库管理的侧边栏-->
+<div th:replace="site/admin/question-manager::managerNav"></div>
+
+<!--展示列表，对题目进行crud-->
+<div class="table-responsive" style="margin-left: 18%">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th colspan="5" style="text-align:left ;font-size: 20px">
+                <button class="line btn btn-primary btn-sm" onclick="add()">添加新题</button>&nbsp;&nbsp;&nbsp;
+                <button class="line btn btn-primary btn-sm" id="getAllSelectedId">批量删除</button>
+            </th>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="allAndNotAll"/>全选/反选</td>
+            <th>编号</th>
+            <th>所属科目</th>
+            <th>题目类别</th>
+            <th>题干</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>答案</th>
+            <th colspan="2">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="map: ${singleDto}">
+            <td><input type="checkbox" name="items" th:id="${map.single.id}"/></td>
+            <td th:text="${map.single.id}">1</td>
+            <td th:text="${map.subjectName}">行测</td>
+            <td th:text="${map.categoryName}">言语理解</td>
+            <td th:text="${map.single.stem}" class="hide-content">
+                美国《科学》杂志的一项研究表明：咖啡因是让蜜蜂忠诚专一的物质。正如咖啡因会刺激人类的大脑一样，这种化学物质也可以刺激蜜蜂的大脑，特别是其中一个叫蘑菇体的脑区域，这一区域跟气味的学习和记忆有关。咖啡因的摄入使得蜜蜂深刻地记住了在柑橘和咖啡花朵上采集花蜜这件事情，所以在接下来很长的一段时间里，蜜蜂都离不开这种特殊味道的花蜜了。
+                最适合这段文字标题的是：
+            </td>
+            <td th:text="${map.single.optionA}" class="hide-content">花蜜与咖啡因</td>
+            <td th:text="${map.single.optionB}" class="hide-content">难以抗拒的咖啡因</td>
+            <td th:text="${map.single.optionC}" class="hide-content">蜜蜂为何“单恋一枝花”</td>
+            <td th:text="${map.single.optionD}" class="hide-content">蜜蜂学习和记忆的奥秘</td>
+            <td th:text="${map.single.answer}">c</td>
+            <td colspan="2">
+                <a th:href="@{|/admin/singleDetail/${map.single.id}|}" style="text-decoration: none;">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: #364ce8">详情</button>
+                </a>
+                <a th:onclick="|edit(${map.single.id})|" style="text-decoration: none;">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: #3e8f3e">修改</button>
+                </a>
+                <a th:onclick="|delOne(${map.single.id})|" style="text-decoration: none;"
+                   data-toggle="modal" data-target="#trashModal">
+                    <button class="btn btn-default" style="width: 50px;height: 30px;background: red">删除</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--分页-->
+<nav th:replace="site/admin/subject::pagination"></nav>
+
+<!--添加题目对话框-->
+<div class="modal fade" id="addSingle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="my" style="text-align:center">添加题目</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/addSingle}" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">题干:</span>
+                        <textarea class="form-control" rows="3" name="stem" id="stem"></textarea>
+                    </div>
+
+                    <!-- 若题干有图片，上传并显示 -->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"><input type="checkbox" name="items"
+                                                                     id="hasImg"/>图片:</label>
+                        <img style="width: 60px; height: 40px" src="" alt="" id="img"/>
+                        <input type="file" name="file" id="uploadImage">
+                    </div>
+                    <!-- 隐藏域，保存图片的url-->
+                    <input type="text" name="imageUrl" id="imageUrl" value="1" hidden="hidden"/>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">A:</span>
+                        <textarea class="form-control" rows="3" name="optionA" id="optionA"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">B:</span>
+                        <textarea class="form-control" rows="3" name="optionB" id="optionB"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">C:</span>
+                        <textarea class="form-control" rows="3" name="optionC" id="optionC"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">D:</span>
+                        <textarea class="form-control" rows="3" name="optionD" id="optionD"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">答案:</span>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="answer" name="answer" multiple>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">解析:</span>
+                        <textarea class="form-control" rows="3" name="analysis" id="analysis"></textarea>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">分值:</span>
+                        <input type="number" min="0.00" max="999.99" step="0.01" name="score" id="score" value="1.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所属分类:</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="categoryId" name="categoryId">
+
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="addBtn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal编辑模态框 -->
+<div class="modal fade" id="editSingle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myEdit">编辑</h4>
+            </div>
+            <form class="form-horizontal" th:action="@{/admin/updateSingle}" method="post" id="editForm">
+                <div class="modal-body">
+                    <input name="id" id="singleId1" hidden="hidden"/>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">题干:</span>
+                        <textarea class="form-control" rows="3" name="stem" id="stem1"></textarea>
+                    </div>
+
+                    <!-- 若题干有图片，上传并显示 -->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"><input type="checkbox" name="items" id="hasImg1"/>图片:</label>
+                        <img style="width: 60px; height: 40px" src="" alt="" id="img1"/>
+                        <input type="file" name="file" id="uploadImage1">
+                    </div>
+                    <!-- 隐藏域，保存图片的url-->
+                    <input type="text" name="imageUrl" id="imageUrl1" value="1" hidden="hidden"/>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">A:</span>
+                        <textarea class="form-control" rows="3" name="optionA" id="optionA1"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">B:</span>
+                        <textarea class="form-control" rows="3" name="optionB" id="optionB1"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">C:</span>
+                        <textarea class="form-control" rows="3" name="optionC" id="optionC1"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 20px ; tab-size: 16px ">D:</span>
+                        <textarea class="form-control" rows="3" name="optionD" id="optionD1"></textarea>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">答案:</span>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="answer1" name="answer" multiple>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">解析:</span>
+                        <textarea class="form-control" rows="3" name="analysis" id="analysis1"></textarea>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <span class="input-group-addon" style="height: 40px ; tab-size: 16px ">分值:</span>
+                        <input type="number" min="0.00" max="999.99" step="0.01" name="score" id="score1" value="1.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所属分类:</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="categoryId1" name="categoryId">
+
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="updateBtn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/js/single.js}"></script>
+</body>
+</html>
